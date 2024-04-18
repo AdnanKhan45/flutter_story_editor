@@ -1,7 +1,12 @@
 name: flutter_story_editor
 description: "This package is created using style of the WhatsApp story image/video editor, with which you can edit images and videos both together. You can add texts, stickers, freehand finger drawing, apply filter, and undo"
 version: 0.0.1
-homepage:
+
+license: MIT
+
+
+repository: https://github.com/AdnanKhan45/flutter_story_editor/tree/main
+homepage: https://github.com/AdnanKhan45/flutter_story_editor/blob/main/lib/flutter_story_editor.dart
 
 environment:
   sdk: '>=3.3.0 <4.0.0'
