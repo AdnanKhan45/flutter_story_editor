@@ -1,0 +1,90 @@
+name: flutter_story_editor
+description: "This package is created using style of the WhatsApp story image/video editor, with which you can edit images and videos both together. You can add texts, stickers, freehand finger drawing, apply filter, and undo"
+version: 0.0.1
+homepage:
+
+environment:
+  sdk: '>=3.3.0 <4.0.0'
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  image_cropper: ^5.0.1
+  video_player: ^2.8.6
+  video_trimmer: ^3.0.1
+  video_thumbnail: ^0.5.3
+  hsv_color_pickers: 0.3.0
+  perfect_freehand: ^2.3.2
+
+  file_picker: ^8.0.1
+  path: ^1.9.0
+  flutter_keyboard_visibility: ^6.0.0
+  vector_math: ^2.1.4
+  font_awesome_flutter: ^10.7.0
+  material_design_icons_flutter: ^7.0.7296
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.2
+
+# For information on the generic Dart part of this file, see the
+# following page: https://dart.dev/tools/pub/pubspec
+
+# The following section is specific to Flutter packages.
+flutter:
+
+  # To add assets to your package, add an assets section, like this:
+  assets:
+    - assets/images/
+    - assets/emojies/
+
+  # An image asset can refer to one or more resolution-specific "variants", see
+  # https://flutter.dev/assets-and-images/#resolution-aware
+
+  # For details regarding adding assets from package dependencies, see
+  # https://flutter.dev/assets-and-images/#from-packages
+
+  # To add custom fonts to your application, add a fonts section here,
+  # in this "flutter" section. Each entry in this list should have a
+  # "family" key with the font family name, and a "fonts" key with a
+  # list giving the asset and other descriptors for the font. For
+  # example:
+  fonts:
+    - family: Roboto
+      fonts:
+        - asset: assets/fonts/roboto/Roboto-Regular.ttf
+    - family: Merriweather
+      fonts:
+        - asset: assets/fonts/merriweather/Merriweather-Regular.ttf
+    - family: Mandimi One
+      fonts:
+        - asset: assets/fonts/madimiOne/MadimiOne-Regular.ttf
+    - family: Dancing Script
+      fonts:
+        - asset: assets/fonts/dancing_script/DancingScript-Regular.ttf
+    - family: Angkor
+      fonts:
+        - asset: assets/fonts/angkor/Angkor-Regular.ttf
+    - family: Montserrat
+      fonts:
+        - asset: assets/fonts/montserrat/Montserrat-Regular.ttf
+    - family: Lato
+      fonts:
+        - asset: assets/fonts/lato/Lato-Regular.ttf
+    - family: Oswald
+      fonts:
+        - asset: assets/fonts/oswald/Oswald-Regular.ttf
+    - family: Raleway
+      fonts:
+        - asset: assets/fonts/raleway/Raleway-Regular.ttf
+    - family: Lora
+      fonts:
+        - asset: assets/fonts/lora/Lora-Regular.ttf
+    - family: Pacifico
+      fonts:
+        - asset: assets/fonts/pacifico/Pacifico-Regular.ttf
+  #
+  # For details regarding fonts in packages, see
+  # https://flutter.dev/custom-fonts/#from-packages
