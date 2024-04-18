@@ -23,7 +23,7 @@ class TextTopView extends StatelessWidget {
                 onTap: () {
                   FocusScope.of(context).unfocus();
 
-                  controller.setStoryEditingModeSelected = StoryEditingModes.NONE;
+                  controller.setStoryEditingModeSelected = StoryEditingModes.none;
 
                 },
                 child: Container(

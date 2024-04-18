@@ -34,16 +34,18 @@ class FlutterStoryEditor extends StatefulWidget {
 }
 
 class _FlutterStoryEditorState extends State<FlutterStoryEditor> {
+  // Stream controller for broadcasting undo drawing actions.
   StreamController<bool> drawingUndoController = StreamController<bool>.broadcast();
 
+  // List to keep track of edit actions for undo functionality.
   List<EditAction> editActions = [];
 
 
   @override
   void dispose() {
-    // Cleans up resources and controllers on widget disposal.
+    /// Cleans up resources and controllers on widget disposal.
     drawingUndoController.close();
-    widget.controller.setStoryEditingModeSelected = StoryEditingModes.NONE;
+    widget.controller.setStoryEditingModeSelected = StoryEditingModes.paint;
     keyboardSubscription.cancel();
     super.dispose();
   }
@@ -75,6 +77,7 @@ class _FlutterStoryEditorState extends State<FlutterStoryEditor> {
   @override
   void initState() {
     super.initState();
+    // Initializes and sets up necessary controllers and listeners.
 
     drawingUndoController.stream.listen((_) => undo(widget.controller.uiEditableFileLines[currentPageIndex]));
 
@@ -84,10 +87,12 @@ class _FlutterStoryEditorState extends State<FlutterStoryEditor> {
 
     _imageKeys = List.generate(widget.selectedFiles!.length, (index) => GlobalKey());
 
-    selectedFilters = List.generate(widget.selectedFiles!.length, (index) => NO_FILTER);
+    selectedFilters = List.generate(widget.selectedFiles!.length, (index) => noFiler);
 
     textList = ValueNotifier(List.generate(widget.selectedFiles!.length, (index) => []));
     stickersList = ValueNotifier(List.generate(widget.selectedFiles!.length, (index) => []));
+
+    // Listening to keyboard visibility
 
     captionFocusNode.addListener(() {
       if (captionFocusNode.hasFocus) {
@@ -111,6 +116,7 @@ class _FlutterStoryEditorState extends State<FlutterStoryEditor> {
 
   final PageController _pageController = PageController();
 
+  // Controlling caption field
   FocusNode captionFocusNode = FocusNode();
 
   @override
@@ -125,10 +131,12 @@ class _FlutterStoryEditorState extends State<FlutterStoryEditor> {
                 valueListenable: widget.controller.editingModeNotifier,
                 builder: (BuildContext context, StoryEditingModes mode, Widget? child) {
                   return PopScope(
-                    canPop: mode == StoryEditingModes.NONE,
+                    canPop: mode == StoryEditingModes.none,
                     onPopInvoked: (bool isSystemPop) {
+                      // Controlling state
+                      // Return to [StoryEditingModes.NONE] state only if selected state is not NONE.
                       if (!isSystemPop) {
-                        widget.controller.setStoryEditingModeSelected = StoryEditingModes.NONE;
+                        widget.controller.setStoryEditingModeSelected = StoryEditingModes.none;
                       }
                     },
                     child: Container(
@@ -139,7 +147,7 @@ class _FlutterStoryEditorState extends State<FlutterStoryEditor> {
                           SizedBox(
                               width: double.infinity,
                               child: PageView(
-                                physics: isKeyboardFocused || widget.controller.editingModeSelected != StoryEditingModes.NONE
+                                physics: isKeyboardFocused || widget.controller.editingModeSelected != StoryEditingModes.none
                                     ? const NeverScrollableScrollPhysics()
                                     : const ScrollPhysics(),
                                 controller: _pageController,
@@ -150,6 +158,7 @@ class _FlutterStoryEditorState extends State<FlutterStoryEditor> {
                                 },
                                 children: uiViewEditableFiles!.map((singleStory) {
                                   int storyIndex = uiViewEditableFiles!.indexOf(singleStory);
+                                  // if the selected file was video show [TrimmerView]
                                   if (isVideo(singleStory)) {
                                     return TrimmerView(
                                       lines: widget.controller.uiEditableFileLines[storyIndex],
@@ -171,25 +180,37 @@ class _FlutterStoryEditorState extends State<FlutterStoryEditor> {
                                       pageIndex: storyIndex,
                                     );
                                   } else {
-                                    return RepaintBoundary(
-                                      key: _imageKeys[storyIndex],
-                                      child: ImageView(
-                                        storyIndex: storyIndex,
-                                        textList: textListValue,
-                                        stickerList: stickerListValue,
-                                        lines: widget.controller.uiEditableFileLines[storyIndex],
-                                        controller: widget.controller,
-                                        file: singleStory,
-                                        filter: selectedFilters[storyIndex],
+                                    // if the selected file was image show [ImageView]
+                                    return GestureDetector(
+                                      onVerticalDragUpdate: (details) {
+                                        if (details.delta.dy < 0) {
+                                          widget.controller.setStoryEditingModeSelected = StoryEditingModes.filters;
+                                        } else if (details.delta.dy > 0) {
+                                          widget.controller.setStoryEditingModeSelected = StoryEditingModes.none;
+                                        }
+                                      },
+                                      child: RepaintBoundary(
+                                        key: _imageKeys[storyIndex],
+                                        child: ImageView(
+                                          storyIndex: storyIndex,
+                                          textList: textListValue,
+                                          stickerList: stickerListValue,
+                                          lines: widget.controller.uiEditableFileLines[storyIndex],
+                                          controller: widget.controller,
+                                          file: singleStory,
+                                          filter: selectedFilters[storyIndex],
+                                        ),
                                       ),
                                     );
                                   }
                                 }).toList(),
                               )),
-                          if (mode == StoryEditingModes.PAINT)
+
+                          // If selected mode was PAINT show paint control views.
+                          if (mode == StoryEditingModes.paint)
                             PaintControlsView(
                               onDoneClickListener: () async {
-                                widget.controller.setStoryEditingModeSelected = StoryEditingModes.NONE;
+                                widget.controller.setStoryEditingModeSelected = StoryEditingModes.none;
 
                                 await generateThumbnail(uiViewEditableFiles![currentPageIndex]).then((generatedThumbnail) {
                                   setState(() {
@@ -227,12 +248,14 @@ class _FlutterStoryEditorState extends State<FlutterStoryEditor> {
                               controller: widget.controller,
                               selectedFile: widget.selectedFiles![currentPageIndex],
                             )
-                          else if (mode == StoryEditingModes.STICKERS)
+
+                          // If selected mode was STICKERS show sticker control views.
+                          else if (mode == StoryEditingModes.stickers)
                             StickerControlView(
                                 controller: widget.controller,
                                 onStickerClickListener: (stickerPath) {
 
-                                  widget.controller.setStoryEditingModeSelected = StoryEditingModes.NONE;
+                                  widget.controller.setStoryEditingModeSelected = StoryEditingModes.none;
 
                                   setState(() {
 
@@ -257,20 +280,27 @@ class _FlutterStoryEditorState extends State<FlutterStoryEditor> {
 
                                 }
                             )
-                          else if (mode == StoryEditingModes.TEXT)
+
+                          // If selected mode was TEXT show text control views,
+                          // Here I returned Container() because these controls are
+                          // handled within DraggableStickerWidget
+
+                          else if (mode == StoryEditingModes.text)
                               Container()
+
+                              // If selected mode was NONE show main control views
                             else
                               MainControlsView(
                                 stickerList: stickerListValue,
                                 onStickersClickListener: () {
-                                  widget.controller.setStoryEditingModeSelected = StoryEditingModes.STICKERS;
+                                  widget.controller.setStoryEditingModeSelected = StoryEditingModes.stickers;
                                 },
                                 captionFocusNode: captionFocusNode,
                                 textList: textListValue,
                                 isFocused: isKeyboardFocused,
                                 lines: widget.controller.uiEditableFileLines[currentPageIndex],
                                 onTextClickListener: () {
-                                  widget.controller.setStoryEditingModeSelected = StoryEditingModes.TEXT;
+                                  widget.controller.setStoryEditingModeSelected = StoryEditingModes.text;
 
                                   setState(() {
                                     if (textList.value.length <= currentPageIndex) {
@@ -295,11 +325,13 @@ class _FlutterStoryEditorState extends State<FlutterStoryEditor> {
                                   widget.controller.setFileSelected = widget.selectedFiles![currentPageIndex];
                                   widget.controller.setFilterSelected = selectedFilters[currentPageIndex];
 
-                                  widget.controller.setStoryEditingModeSelected = StoryEditingModes.PAINT;
+                                  widget.controller.setStoryEditingModeSelected = StoryEditingModes.paint;
                                 },
                                 currentPageIndex: currentPageIndex,
                                 pageController: _pageController,
                                 onUndoClickListener: () {
+
+                                  // Handling undo action based on the item which was added last to the list
 
                                   if (editActions.isNotEmpty) {
                                     EditAction lastAction = editActions.removeLast();
@@ -312,7 +344,7 @@ class _FlutterStoryEditorState extends State<FlutterStoryEditor> {
                                           stickersList.value[currentPageIndex].remove(lastAction.item);
                                           break;
                                         case 'filter':
-                                          selectedFilters[currentPageIndex] = NO_FILTER;
+                                          selectedFilters[currentPageIndex] = noFiler;
                                           break;
                                         case 'line':
                                           undo(widget.controller.uiEditableFileLines[currentPageIndex]);
@@ -385,7 +417,7 @@ class _FlutterStoryEditorState extends State<FlutterStoryEditor> {
   }
 }
 
-
+// EditAction item to handle undo action.
 class EditAction {
   final dynamic item;
   final String type;

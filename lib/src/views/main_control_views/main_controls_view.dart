@@ -1,6 +1,7 @@
+// Import necessary Dart and Flutter packages.
+
 import 'dart:io';
 import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_story_editor/src/controller/controller.dart';
 import 'package:flutter_story_editor/src/enums/story_editing_modes.dart';
@@ -10,32 +11,35 @@ import 'package:flutter_story_editor/src/views/main_control_views/filters_view.d
 import 'package:flutter_story_editor/src/widgets/draggable_sticker_widget.dart';
 import 'package:flutter_story_editor/src/widgets/draggable_text_widget.dart';
 
+// Import additional custom views for different aspects of the UI.
+
 import 'caption_view.dart';
 import 'filter_text_view.dart';
 import 'thumbnail_view.dart';
 import 'top_view.dart';
 
 class MainControlsView extends StatefulWidget {
-  final List<File>? selectedFiles;
-  final VoidCallback? onSaveClickListener;
-  final TextEditingController? captionController;
-  final FlutterStoryEditorController controller;
-  final List<File> uiViewEditableFiles;
-  final List<List<double>> selectedFilters;
-  final List<List<DraggableTextWidget>> textList;
-  final List<List<DraggableStickerWidget>> stickerList;
-  final Function(List<double>) onFilterChange;
-  final Function(File) onImageCrop;
-  final VoidCallback onUndoClickListener;
-  final VoidCallback onPaintClickListener;
-  final VoidCallback onTextClickListener;
-  final VoidCallback onStickersClickListener;
-  final PageController pageController;
-  final int currentPageIndex;
-  final List<Stroke> lines;
-  final bool isSaving;
-  final bool isFocused;
-  final FocusNode? captionFocusNode;
+  final List<File>? selectedFiles; // Optional list of media files selected for editing.
+  final VoidCallback? onSaveClickListener; // Optional callback for save action.
+  final TextEditingController? captionController; // Optional controller for caption text.
+  final FlutterStoryEditorController controller; // Controller for managing editor states and interactions.
+  final List<File> uiViewEditableFiles; // List of editable media files for the UI.
+  final List<List<double>> selectedFilters; // List of filters applied to each media file.
+  final List<List<DraggableTextWidget>> textList; // Lists of draggable text widgets for each page.
+  final List<List<DraggableStickerWidget>> stickerList; // Lists of draggable sticker widgets for each page.
+  final Function(List<double>) onFilterChange; // Callback for changing filters.
+  final Function(File) onImageCrop; // Callback for cropping images.
+  final VoidCallback onUndoClickListener; // Callback for undo actions.
+  final VoidCallback onPaintClickListener; // Callback for activating paint mode.
+  final VoidCallback onTextClickListener; // Callback for activating text mode.
+  final VoidCallback onStickersClickListener; // Callback for activating stickers mode.
+  final PageController pageController; // Controller for managing page transitions.
+  final int currentPageIndex; // Index of the current page in the editor.
+  final List<Stroke> lines; // List of stroke actions for drawing.
+  final bool isSaving; // Flag to indicate if a save operation is in progress.
+  final bool isFocused; // Flag to check if the keyboard is focused.
+  final FocusNode? captionFocusNode; // Optional focus node for the caption input.
+
 
   const MainControlsView(
       {super.key,
@@ -65,13 +69,15 @@ class MainControlsView extends StatefulWidget {
 }
 
 class _MainControlsViewState extends State<MainControlsView> {
-  final Map<File, Uint8List?> _thumbnails = {};
+  final Map<File, Uint8List?> _thumbnails = {}; // Cache for storing generated thumbnails for video files.
 
+  // Variables for tracking original files before modifications.
   List<File>? originalFiles;
 
-  static const double maxVideoSizeMB = 50; // Maximum allowed video size in MB
-  static const double maxImageSizeMB = 5; // Maximum allowed image size in MB
+  static const double maxVideoSizeMB = 50; // Maximum allowed video size in MB.
+  static const double maxImageSizeMB = 5; // Maximum allowed image size in MB.
 
+  // Function to generate thumbnails for video files asynchronously.
   void generateVideoFilesThumbnails() async {
     for (var file in widget.selectedFiles ?? []) {
       if (isVideo(file)) {
@@ -89,6 +95,7 @@ class _MainControlsViewState extends State<MainControlsView> {
   void initState() {
     super.initState();
 
+    // Initial setup to generate thumbnails and handle large files.
     generateVideoFilesThumbnails();
 
     for (var file in widget.selectedFiles!) {
@@ -96,21 +103,18 @@ class _MainControlsViewState extends State<MainControlsView> {
       final sizeInMB = bytes.lengthInBytes / (1024 * 1024);
 
       if (isVideo(file) && sizeInMB > maxVideoSizeMB) {
-        // Handle large video
         Navigator.pop(context);
-        // Perhaps remove from the list or show a dialog
       }
 
       if (!isVideo(file) && sizeInMB > maxImageSizeMB) {
-        // Handle large image
         Navigator.pop(context);
-        // Perhaps remove from the list or show a dialog
       }
     }
 
     originalFiles = List<File>.from(widget.selectedFiles!);
   }
 
+  // Function to crop images.
   void _cropImage(BuildContext context) {
     cropImage(
       context,
@@ -122,7 +126,6 @@ class _MainControlsViewState extends State<MainControlsView> {
       }
     });
   }
-
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -142,6 +145,7 @@ class _MainControlsViewState extends State<MainControlsView> {
     );
   }
 
+  // Function to build the top view of the editor.
   Widget _buildTop() {
     return TopView(
       stickerList: widget.stickerList,
@@ -167,6 +171,7 @@ class _MainControlsViewState extends State<MainControlsView> {
     );
   }
 
+  // Function to build the bottom view of the editor.
   Widget _buildBottom() {
     return AnimatedPadding(
       duration: const Duration(milliseconds: 200),
@@ -181,12 +186,7 @@ class _MainControlsViewState extends State<MainControlsView> {
           if(widget.isFocused == false)
             isVideo(widget.selectedFiles![widget.currentPageIndex])
               ? Container()
-              : FilterTextView(
-                  showFilters: widget.controller.editingModeSelected,
-                  onChange: (showFiltersView) {
-                    widget.controller.setStoryEditingModeSelected = showFiltersView;
-                  },
-                ),
+              : FilterTextView(controller: widget.controller),
           const SizedBox(
             height: 5,
           ),
@@ -207,7 +207,7 @@ class _MainControlsViewState extends State<MainControlsView> {
                 height: 10,
               ),
 
-              if (widget.controller.editingModeSelected == StoryEditingModes.FILTERS)
+              if (widget.controller.editingModeSelected == StoryEditingModes.filters)
                 FiltersView(
                   onFilterChange: (filter) {
                     widget.onFilterChange(filter);

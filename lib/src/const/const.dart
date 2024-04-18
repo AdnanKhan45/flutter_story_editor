@@ -11,12 +11,12 @@ class Consts {
 
 
   static List<List<double>> filters = [
-    NO_FILTER,
-    POP,
-    BLACK_AND_WHITE,
-    COOL,
-    CHROME,
-    FILM
+    noFiler,
+    popFilter,
+    blackAndWhiteFilter,
+    coolFilter,
+    chromeFilter,
+    filmFilter
   ];
 
   static List<String> stickers = [

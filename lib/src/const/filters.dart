@@ -1,7 +1,7 @@
 // No Filter: Identity Matrix
 import 'package:flutter/material.dart';
 
-const NO_FILTER = [
+const noFiler = [
   1.0, 0.0, 0.0, 0.0, 0.0,
   0.0, 1.0, 0.0, 0.0, 0.0,
   0.0, 0.0, 1.0, 0.0, 0.0,
@@ -9,7 +9,7 @@ const NO_FILTER = [
 ];
 
 // Black & White
-const BLACK_AND_WHITE = [
+const blackAndWhiteFilter = [
   0.3, 0.6, 0.1, 0.0, 0.0,
   0.3, 0.6, 0.1, 0.0, 0.0,
   0.3, 0.6, 0.1, 0.0, 0.0,
@@ -18,7 +18,7 @@ const BLACK_AND_WHITE = [
 
 
 // Pop: Increase saturation
-const POP = [
+const popFilter = [
   1.3, 0.0, 0.0, 0.0, 0.0,
   0.0, 1.3, 0.0, 0.0, 0.0,
   0.0, 0.0, 1.3, 0.0, 0.0,
@@ -26,7 +26,7 @@ const POP = [
 ];
 
 // Cool: Add a blue tint
-const COOL = [
+const coolFilter = [
   1.0, 0.0, 0.0, 0.0, 0.0,
   0.0, 1.0, 0.0, 0.0, 0.0,
   0.0, 0.0, 1.2, 0.0, 0.0,
@@ -34,7 +34,7 @@ const COOL = [
 ];
 
 // Chrome: Increase contrast
-const CHROME = [
+const chromeFilter = [
   1.5, 0.0, 0.0, 0.0, -0.2,
   0.0, 1.5, 0.0, 0.0, -0.2,
   0.0, 0.0, 1.5, 0.0, -0.2,
@@ -42,7 +42,7 @@ const CHROME = [
 ];
 
 // Film: Decrease saturation
-const FILM = [
+const filmFilter = [
   0.8, 0.2, 0.2, 0.0, 0.0,
   0.2, 0.8, 0.2, 0.0, 0.0,
   0.2, 0.2, 0.8, 0.0, 0.0,

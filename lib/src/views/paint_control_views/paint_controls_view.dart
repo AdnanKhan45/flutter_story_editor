@@ -10,42 +10,44 @@ import 'package:perfect_freehand/perfect_freehand.dart';
 
 import 'paint_top_view.dart';
 
+// PaintControlsView provides a customizable painting interface over an image or video.
 class PaintControlsView extends StatefulWidget {
-  final File selectedFile;
-  final List<Stroke> uiEditableFileLines;
-  final VoidCallback onUndoClickListener;
-  final Function(Stroke) onPointerDownUpdate;
-  final FlutterStoryEditorController controller;
-  final VoidCallback onDoneClickListener;
+  final File selectedFile; // The file (image/video) being edited.
+  final List<Stroke> uiEditableFileLines; // List of strokes drawn on the canvas.
+  final VoidCallback onUndoClickListener; // Callback when the undo button is pressed.
+  final Function(Stroke) onPointerDownUpdate; // Callback when a new stroke is started.
+  final FlutterStoryEditorController controller; // Controller for managing editing state.
+  final VoidCallback onDoneClickListener; // Callback when the done button is pressed.
 
-  const PaintControlsView(
-      {super.key,
-      required this.selectedFile,
-      required this.controller,
-      required this.uiEditableFileLines,
-      required this.onPointerDownUpdate,
-      required this.onUndoClickListener,
-      required this.onDoneClickListener});
+  const PaintControlsView({
+    super.key,
+    required this.selectedFile,
+    required this.controller,
+    required this.uiEditableFileLines,
+    required this.onPointerDownUpdate,
+    required this.onUndoClickListener,
+    required this.onDoneClickListener
+  });
 
   @override
   PaintControlsViewState createState() => PaintControlsViewState();
 }
 
 class PaintControlsViewState extends State<PaintControlsView> {
-  HSVColor _pencilColor = HSVColor.fromColor(Colors.tealAccent);
-  Stroke? line;
+  HSVColor _pencilColor = HSVColor.fromColor(Colors.tealAccent); // Initial pencil color.
+  Stroke? line; // Current stroke being drawn.
+  double size = 3; // Initial stroke size.
 
-  double size = 3;
-
+  // Handles pointer down event, initializing a new stroke.
   void onPointerDown(PointerDownEvent details) {
     final box = context.findRenderObject() as RenderBox;
     final offset = box.globalToLocal(details.position);
     final point = details.kind == PointerDeviceKind.stylus
         ? PointVector(
-            offset.dx,
-            offset.dy / 2,
-            (details.pressure - details.pressureMin) / (details.pressureMax - details.pressureMin),
-          )
+      offset.dx,
+      offset.dy / 2,
+      (details.pressure - details.pressureMin) / (details.pressureMax - details.pressureMin),
+    )
         : PointVector(offset.dx, offset.dy);
     final points = [point];
     line = Stroke(points, _pencilColor.toColor(), StrokeOptions(size: size));
@@ -54,21 +56,23 @@ class PaintControlsViewState extends State<PaintControlsView> {
     });
   }
 
+  // Updates the current stroke with new points as the pointer moves.
   void onPointerMove(PointerMoveEvent details) {
     final box = context.findRenderObject() as RenderBox;
     final offset = box.globalToLocal(details.position);
     final point = details.kind == PointerDeviceKind.stylus
         ? PointVector(
-            offset.dx,
-            offset.dy,
-            (details.pressure - details.pressureMin) / (details.pressureMax - details.pressureMin),
-          )
+      offset.dx,
+      offset.dy,
+      (details.pressure - details.pressureMin) / (details.pressureMax - details.pressureMin),
+    )
         : PointVector(offset.dx, offset.dy);
     setState(() {
       line!.points.add(point);
     });
   }
 
+  // Finalizes the stroke when the pointer is lifted.
   void onPointerUp(PointerUpEvent details) {
     widget.onPointerDownUpdate(line!);
     line = null;
@@ -76,9 +80,11 @@ class PaintControlsViewState extends State<PaintControlsView> {
 
   @override
   Widget build(BuildContext context) {
+    // Building the widget's visual structure.
     return Stack(
       alignment: Alignment.center,
       children: [
+        // Listener to handle touch events on the canvas.
         Listener(
           onPointerDown: onPointerDown,
           onPointerUp: onPointerUp,
@@ -88,6 +94,7 @@ class PaintControlsViewState extends State<PaintControlsView> {
             child: Container(),
           ),
         ),
+        // Top bar with painting controls.
         Align(
           alignment: Alignment.topCenter,
           child: PaintTopView(
@@ -101,6 +108,7 @@ class PaintControlsViewState extends State<PaintControlsView> {
             pencilColor: _pencilColor,
           ),
         ),
+        // Bottom bar with size controls.
         Align(
           alignment: Alignment.bottomCenter,
           child: Padding(
@@ -113,17 +121,17 @@ class PaintControlsViewState extends State<PaintControlsView> {
                     size = 3;
                   });
                 }),
-                bottomIcon(MdiIcons.sizeL, isSelected: size == 6,onTap: () {
+                bottomIcon(MdiIcons.sizeL, isSelected: size == 6, onTap: () {
                   setState(() {
                     size = 6;
                   });
                 }),
-                bottomIcon(MdiIcons.sizeXl, isSelected: size == 9,onTap: () {
+                bottomIcon(MdiIcons.sizeXl, isSelected: size == 9, onTap: () {
                   setState(() {
                     size = 9;
                   });
                 }),
-                bottomIcon(MdiIcons.sizeXxl, isSelected: size == 12,onTap: () {
+                bottomIcon(MdiIcons.sizeXxl, isSelected: size == 12, onTap: () {
                   setState(() {
                     size = 12;
                   });
@@ -132,6 +140,7 @@ class PaintControlsViewState extends State<PaintControlsView> {
             ),
           ),
         ),
+        // Slider for changing the pencil color.
         Positioned(
           top: 100,
           right: 28,
@@ -147,6 +156,7 @@ class PaintControlsViewState extends State<PaintControlsView> {
     );
   }
 
+  // Helper function to create icons for selecting stroke size.
   bottomIcon(IconData icon, {VoidCallback? onTap, bool? isSelected}) {
     return GestureDetector(
       onTap: onTap,
@@ -163,20 +173,3 @@ class PaintControlsViewState extends State<PaintControlsView> {
     );
   }
 }
-
-// Align(
-//   alignment: Alignment.center,
-//   child: LayoutBuilder(
-//     builder: (BuildContext context, BoxConstraints constraints) {
-//       final paintingAreaWidth = constraints.maxWidth * 0.75;  // 75% of screen width
-//       final paintingAreaHeight = constraints.maxHeight * 0.75;  // 75% of screen height
-//       final offsetX = (constraints.maxWidth - paintingAreaWidth) / 2; // horizontal offset
-//       final offsetY = (constraints.maxHeight - paintingAreaHeight) / 2; // vertical offset
-//       return Container(
-//         width: paintingAreaWidth,
-//         height: paintingAreaHeight,
-//         child:
-//       );
-//     },
-//   ),
-// ),

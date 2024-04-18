@@ -60,10 +60,10 @@ class _FlutterStoryEditorExampleState extends State<FlutterStoryEditorExample> w
 
         setState(() {});
       } else {
-        print("No file is selected.");
+
       }
     } catch (e) {
-      print("Error while picking file: $e");
+      throw Exception("unable to pick files, please try again");
     }
   }
 

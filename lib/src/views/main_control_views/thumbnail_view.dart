@@ -1,7 +1,8 @@
+// Import necessary Dart and Flutter packages.
+
 import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_story_editor/src/controller/controller.dart';
 import 'package:flutter_story_editor/src/models/simple_sketecher.dart';
@@ -11,12 +12,13 @@ import 'package:flutter_story_editor/src/utils/utils.dart';
 import 'package:perfect_freehand/perfect_freehand.dart';
 
 class ThumbnailView extends StatefulWidget {
-  final List<File> selectedFiles;
-  final int currentPageIndex;
-  final Map<File, Uint8List?>? thumbnails;
-  final List<List<double>>? selectedFilters;
-  final Function(int) onThumbnailTapListener;
-  final FlutterStoryEditorController controller;
+  final List<File> selectedFiles; // List of files selected for editing.
+  final int currentPageIndex; // Current page index to indicate the selected thumbnail.
+  final Map<File, Uint8List?>? thumbnails; // Optional map for storing thumbnails of video files.
+  final List<List<double>>? selectedFilters; // Optional list for storing filters applied to each thumbnail.
+  final Function(int) onThumbnailTapListener; // Callback function to handle thumbnail taps.
+  final FlutterStoryEditorController controller; // Controller to manage editing state and interactions.
+
   const ThumbnailView({
     super.key,
     required this.selectedFiles,
@@ -70,12 +72,12 @@ class _ThumbnailViewState extends State<ThumbnailView> {
 }
 
 class ThumbnailViewItem extends StatefulWidget {
-  final File image;
-  final FlutterStoryEditorController controller;
-  final int index;
-  final Map<File, Uint8List?>? thumbnails;
-  final List<List<double>>? selectedFilters;
-  final List<File>? selectedFiles;
+  final File image; // File for which the thumbnail is displayed.
+  final FlutterStoryEditorController controller; // Controller to manage editing state and interactions.
+  final int index; // Index of the thumbnail in the list.
+  final Map<File, Uint8List?>? thumbnails; // Optional map for storing thumbnails of video files.
+  final List<List<double>>? selectedFilters; // Optional list for storing filters applied to each thumbnail.
+  final List<File>? selectedFiles; // Optional list of files being edited.
   const ThumbnailViewItem(
       {super.key,
       required this.index,

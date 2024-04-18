@@ -7,59 +7,67 @@ import 'package:flutter_story_editor/src/theme/style.dart';
 
 import 'package:video_trimmer/video_trimmer.dart';
 
+// TrimmerView is a StatefulWidget that provides a video trimming interface.
 class TrimmerView extends StatefulWidget {
-  final File file;
-  final int pageIndex;
-  final PageController pageController;
-  final Function(File) onTrimCompleted;
-  final bool? trimOnAdjust;
-  final List<Stroke> lines;
-  const TrimmerView(
-      {super.key,
-      required this.file,
-      required this.pageIndex,
-      required this.pageController,
-      required this.onTrimCompleted,
-      this.trimOnAdjust = false, required this.lines});
+  final File file; // File to be trimmed.
+  final int pageIndex; // Index of the current page in the page controller.
+  final PageController pageController; // Controller for page navigation.
+  final Function(File) onTrimCompleted; // Callback function after trim is completed.
+  final bool? trimOnAdjust; // If true, trims the video as adjustments are made.
+  final List<Stroke> lines; // List of drawing strokes to be displayed over the video.
+
+  // Constructor for initializing TrimmerView with required parameters.
+  const TrimmerView({
+    super.key,
+    required this.file,
+    required this.pageIndex,
+    required this.pageController,
+    required this.onTrimCompleted,
+    this.trimOnAdjust = false,
+    required this.lines
+  });
 
   @override
   TrimmerViewState createState() => TrimmerViewState();
 }
 
-class TrimmerViewState extends State<TrimmerView>
-    with AutomaticKeepAliveClientMixin {
+// State class for TrimmerView, handling video loading, trimming, and UI interactions.
+class TrimmerViewState extends State<TrimmerView> with AutomaticKeepAliveClientMixin {
   @override
-  bool get wantKeepAlive => true;
+  bool get wantKeepAlive => true; // Ensures state is kept when swiping between tabs.
 
-  double _startValue = 0.0;
-  double _endValue = 0.0;
-  final Trimmer _trimmer = Trimmer();
+  double _startValue = 0.0; // Start position of the trim.
+  double _endValue = 0.0; // End position of the trim.
+  final Trimmer _trimmer = Trimmer(); // Trimmer instance for handling video operations.
 
-  bool _isPlaying = false;
-  bool _progressVisibility = false;
-  Timer? _debounce;
+  bool _isPlaying = false; // Indicates if the video is currently playing.
+  bool _progressVisibility = false; // Shows or hides the progress indicator.
+  Timer? _debounce; // Timer for debouncing trim operations.
 
+  // Asynchronously trims the video and updates the UI on completion.
   Future<String?> _trimVideo() async {
     setState(() {
-      _progressVisibility = true;
+      _progressVisibility = true; // Show progress bar.
     });
 
     String? value;
 
+    // Perform the trim operation and handle the result.
     await _trimmer.saveTrimmedVideo(
         startValue: _startValue,
         endValue: _endValue,
         onSave: (value) {
-          widget.onTrimCompleted(File(value!));
+          widget.onTrimCompleted(File(value!)); // Callback with the new file.
         }).then((value) {
       setState(() {
-        _progressVisibility = false;
+        _progressVisibility = false; // Hide progress bar.
       });
     });
 
     return value;
   }
 
+  // Debounces the trim operation to avoid excessive processing.
   void _debounceTrim() {
     if (_debounce?.isActive ?? false) _debounce?.cancel();
     _debounce = Timer(const Duration(milliseconds: 500), () {
@@ -67,6 +75,7 @@ class TrimmerViewState extends State<TrimmerView>
     });
   }
 
+  // Loads the video into the trimmer.
   void _loadVideo() {
     _trimmer.loadVideo(videoFile: widget.file);
   }
@@ -74,14 +83,14 @@ class TrimmerViewState extends State<TrimmerView>
   @override
   void initState() {
     super.initState();
+    _loadVideo(); // Initial video load.
 
-    _loadVideo();
-
+    // Listener to stop video playback when swiping away from the page.
     widget.pageController.addListener(() async {
       if (widget.pageController.page!.round() != widget.pageIndex &&
           _isPlaying) {
         await _trimmer.videoPlaybackControl(
-            startValue: _startValue, endValue: _endValue); // Add this line
+            startValue: _startValue, endValue: _endValue);
         setState(() => _isPlaying = false);
       }
     });
@@ -89,31 +98,32 @@ class TrimmerViewState extends State<TrimmerView>
 
   @override
   void dispose() {
-    _trimmer.dispose();
+    _trimmer.dispose(); // Clean up the trimmer resources.
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
+    super.build(context); // Required for keeping state alive.
 
     return Scaffold(
       body: Builder(
         builder: (context) => Center(
           child: Container(
-            color: Colors.black,
+            color: Colors.black, // Background color.
             child: Stack(
               alignment: Alignment.center,
               children: [
-                VideoViewer(trimmer: _trimmer),
+                VideoViewer(trimmer: _trimmer), // Displays the video being trimmed.
                 CustomPaint(
-                  painter: SimpleSketcher(widget.lines),
+                  painter: SimpleSketcher(widget.lines), // Overlays custom sketches on the video.
                   child: Container(),
                 ),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   mainAxisSize: MainAxisSize.max,
                   children: <Widget>[
+                    // Trim viewer and editor.
                     Container(
                       margin: const EdgeInsets.only(top: 80, left: 6, right: 6),
                       child: Center(
@@ -138,6 +148,7 @@ class TrimmerViewState extends State<TrimmerView>
                       ),
                     ),
                     const SizedBox(height: 10),
+                    // Controls for manual save and progress indicator.
                     if (widget.trimOnAdjust == false)
                       Column(
                         children: [
@@ -151,8 +162,8 @@ class TrimmerViewState extends State<TrimmerView>
                             onPressed: _progressVisibility
                                 ? null
                                 : () async {
-                                    _trimVideo();
-                                  },
+                              _trimVideo();
+                            },
                             child: const Text("SAVE"),
                           ),
                         ],
@@ -160,16 +171,17 @@ class TrimmerViewState extends State<TrimmerView>
                   ],
                 ),
 
+                // Play button to toggle video playback.
                 TextButton(
                   child: _isPlaying
                       ? Container()
                       : const Icon(
-                          Icons.play_arrow,
-                          size: 80.0,
-                          color: Colors.white,
-                        ),
+                    Icons.play_arrow,
+                    size: 80.0,
+                    color: Colors.white,
+                  ),
                   onPressed: () async {
-                    bool playbackState = await _trimmer.videoPlaybackControl(
+                    await _trimmer.videoPlaybackControl(
                       startValue: _startValue,
                       endValue: _endValue,
                     );
@@ -190,4 +202,5 @@ class TrimmerViewState extends State<TrimmerView>
     );
   }
 }
+
 

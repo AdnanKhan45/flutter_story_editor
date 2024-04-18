@@ -23,19 +23,28 @@ class _DraggableTextWidgetState extends State<DraggableTextWidget> with Automati
 
   late final MaterialStatesController _statesController;
 
+  /// [isKeyboardFocused] to control keyboard visibility
   bool isKeyboardFocused = false;
+  /// [isFocusField] to control field focus
   bool isFocusField = false;
 
+  /// [isAlignedLeft] & [isAlignedRight] to alignment of text
   bool isAlignedLeft = false;
   bool isAlignedRight = false;
+
+  /// [selectedTextStyle] to control styling of text
   TextStyle selectedTextStyle = fontStyles[0];
 
+  /// [offset] to control positioning of text
   Offset offset = const Offset(0, 0);
 
+  /// [leftPosition] to control left positioning of text
   double leftPosition = 0.0;
 
+  /// [textColor] to control color of text
   HSVColor textColor = HSVColor.fromColor(Colors.white);
 
+  /// [fontSize] to control sizing of text
   double fontSize = 20;
 
  late StreamSubscription<bool> keyboardSubscription;
@@ -46,16 +55,6 @@ class _DraggableTextWidgetState extends State<DraggableTextWidget> with Automati
     super.initState();
     Future.delayed(const Duration(milliseconds: 100), () => focusNode.requestFocus());
 
-    // focusNode.addListener(() {
-    //   setState(() {
-    //     if(focusNode.hasFocus) {
-    //       isFocusField = true;
-    //     } else {
-    //       isFocusField = false;
-    //
-    //     }
-    //   });
-    // });
 
     _statesController = MaterialStatesController();
 
@@ -65,6 +64,7 @@ class _DraggableTextWidgetState extends State<DraggableTextWidget> with Automati
       Set<MaterialState> states = _statesController.value;
       if (states.contains(MaterialState.focused)) {
 
+        /// Listening to field states through [_statesController] and updating positioning and field focus
         if(mounted) {
           setState(() {
             isFocusField = true;
@@ -127,7 +127,7 @@ class _DraggableTextWidgetState extends State<DraggableTextWidget> with Automati
 
         return Stack(
           children: [
-            if (mode == StoryEditingModes.TEXT && isFocusField)
+            if (mode == StoryEditingModes.text && isFocusField)
               Container(
                 color: Colors.black.withOpacity(.5),
               ),
@@ -150,11 +150,11 @@ class _DraggableTextWidgetState extends State<DraggableTextWidget> with Automati
                           statesController: _statesController,
                           textAlign: TextAlign.center,
                           onTap: () {
-                            widget.controller.setStoryEditingModeSelected = StoryEditingModes.TEXT;
+                            widget.controller.setStoryEditingModeSelected = StoryEditingModes.text;
                           },
                           onTapOutside: (event) {
                             if (_textEditingController.text.isEmpty) {
-                              widget.controller.setStoryEditingModeSelected = StoryEditingModes.NONE;
+                              widget.controller.setStoryEditingModeSelected = StoryEditingModes.none;
                               focusNode.unfocus();
                             }
                           },
@@ -190,12 +190,12 @@ class _DraggableTextWidgetState extends State<DraggableTextWidget> with Automati
                         statesController: _statesController,
                         textAlign: TextAlign.center,
                         onTap: () {
-                          widget.controller.setStoryEditingModeSelected = StoryEditingModes.TEXT;
+                          widget.controller.setStoryEditingModeSelected = StoryEditingModes.text;
 
                         },
                         onTapOutside: (event) {
                           if (_textEditingController.text.isEmpty) {
-                            widget.controller.setStoryEditingModeSelected = StoryEditingModes.NONE;
+                            widget.controller.setStoryEditingModeSelected = StoryEditingModes.none;
                             focusNode.unfocus();
                           }
                         },
@@ -218,6 +218,8 @@ class _DraggableTextWidgetState extends State<DraggableTextWidget> with Automati
             ),
 
 
+            /// If keyboard is visible and field was focused
+            /// show a [TextControlView]
             if(isKeyboardFocused && isFocusField)
             TextControlView(
               controller: widget.controller,
@@ -243,7 +245,8 @@ class _DraggableTextWidgetState extends State<DraggableTextWidget> with Automati
             ),
 
 
-
+            /// If keyboard is visible and field was focused
+            /// show sizing controls
             if (isKeyboardFocused && isFocusField)
               AnimatedPadding(
                 duration: const Duration(milliseconds: 200),
@@ -295,6 +298,8 @@ class _DraggableTextWidgetState extends State<DraggableTextWidget> with Automati
                 ),
               ),
 
+            /// If keyboard is visible and field was focused
+            /// show font styling controls
             if (isKeyboardFocused && isFocusField)
               AnimatedPadding(
                 duration: const Duration(milliseconds: 200),
@@ -340,6 +345,8 @@ class _DraggableTextWidgetState extends State<DraggableTextWidget> with Automati
                 ),
               ),
 
+            /// If keyboard is visible and field was focused
+            /// show color picker slider
             if (isKeyboardFocused && isFocusField)
               Positioned(
                 top: 100,

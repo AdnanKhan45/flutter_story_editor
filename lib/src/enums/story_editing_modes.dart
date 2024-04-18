@@ -1,9 +1,9 @@
 
 
 enum StoryEditingModes {
-  NONE,
-  FILTERS,
-  PAINT,
-  TEXT,
-  STICKERS,
+  none,
+  filters,
+  paint,
+  text,
+  stickers,
 }

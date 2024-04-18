@@ -14,7 +14,7 @@ class StickerTopView extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         GestureDetector(onTap: () {
-          controller.setStoryEditingModeSelected = StoryEditingModes.NONE;
+          controller.setStoryEditingModeSelected = StoryEditingModes.none;
         },child: const Icon(Icons.arrow_back, size: 25, color: Colors.white,)),
         Container(
           width: 40,
