@@ -34,7 +34,7 @@ This package is created using style of the WhatsApp story image/video editor, wi
 
   <img src="https://media.giphy.com/media/JubXlSh0KAlZjKnqRW/giphy.gif" width=200 />
   <img src="https://media.giphy.com/media/aJ0xQJf2R7hNPLSUxa/giphy.gif" width=200 />
-  <img src="https://media.giphy.com/media/6KQF28BWqs3CMbagjK/giphy.gif" width=200 />
+  <img src="https://media.giphy.com/media/jt9QoLmFKfdIztRFpy/giphy.gif" width=200 />
 
 
 </p>
