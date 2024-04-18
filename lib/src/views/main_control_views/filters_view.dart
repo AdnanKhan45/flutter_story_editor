@@ -7,12 +7,12 @@ import 'package:flutter_story_editor/src/theme/style.dart';
 
 class FiltersView extends StatefulWidget {
 
-  List<List<double>> selectedFilters = [];
+  final List<List<double>> selectedFilters;
   final List<File>? selectedFiles;
   final int currentPageIndex;
   final Function(List<double>) onFilterChange;
 
-  FiltersView({super.key,  this.selectedFilters = const [], this.selectedFiles, required this.currentPageIndex, required this.onFilterChange});
+  const FiltersView({super.key,  required this.selectedFilters, this.selectedFiles, required this.currentPageIndex, required this.onFilterChange});
 
   @override
   State<FiltersView> createState() => _FiltersViewState();

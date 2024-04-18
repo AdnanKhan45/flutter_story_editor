@@ -123,15 +123,15 @@ class MatrixGestureDetectorState extends State<MatrixGestureDetector> {
     );
   }
 
-  _ValueUpdater<Offset> translationUpdater = _ValueUpdater(
+  ValueUpdater<Offset> translationUpdater = ValueUpdater(
     value: Offset.zero,
     onUpdate: (oldVal, newVal) => newVal - oldVal,
   );
-  _ValueUpdater<double> scaleUpdater = _ValueUpdater(
+  ValueUpdater<double> scaleUpdater = ValueUpdater(
     value: 1.0,
     onUpdate: (oldVal, newVal) => newVal / oldVal,
   );
-  _ValueUpdater<double> rotationUpdater = _ValueUpdater(
+  ValueUpdater<double> rotationUpdater = ValueUpdater(
     value: 0.0,
     onUpdate: (oldVal, newVal) => newVal - oldVal,
   );
@@ -221,13 +221,13 @@ class MatrixGestureDetectorState extends State<MatrixGestureDetector> {
   }
 }
 
-typedef _OnUpdate<T> = T Function(T oldValue, T newValue);
+typedef OnUpdate<T> = T Function(T oldValue, T newValue);
 
-class _ValueUpdater<T> {
-  final _OnUpdate<T> onUpdate;
+class ValueUpdater<T> {
+  final OnUpdate<T> onUpdate;
   T value;
 
-  _ValueUpdater({
+  ValueUpdater({
     required this.value,
     required this.onUpdate,
   });
