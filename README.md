@@ -33,8 +33,9 @@ This package is created using style of the WhatsApp story image/video editor, wi
 <p float="left">
 
   <img src="https://media.giphy.com/media/JubXlSh0KAlZjKnqRW/giphy.gif" width=200 />
-  <img src="https://res.cloudinary.com/dor7mejda/image/upload/v1713443118/Screen_Recording_2024-04-18_at_5.09.25_PM_kdfpza.gif" width=200> 
-  <img src="https://res.cloudinary.com/dor7mejda/image/upload/v1713443118/Screen_Recording_2024-04-18_at_5.06.32_PM_vdirgz.gif" width=200> 
+  <img src="https://media.giphy.com/media/aJ0xQJf2R7hNPLSUxa/giphy.gif" width=200 />
+  <img src="https://media.giphy.com/media/6KQF28BWqs3CMbagjK/giphy.gif" width=200 />
+
 
 </p>
 
