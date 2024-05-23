@@ -9,7 +9,7 @@ repository: https://github.com/AdnanKhan45/flutter_story_editor/tree/main
 homepage: https://github.com/AdnanKhan45/flutter_story_editor/blob/main/lib/flutter_story_editor.dart
 
 environment:
-  sdk: '>=3.3.0 <4.0.0'
+  sdk: '>=3.2.3 <4.0.0'
   flutter: ">=1.17.0"
 
 dependencies:
@@ -23,12 +23,12 @@ dependencies:
   perfect_freehand: ^2.3.2
 
   file_picker: ^8.0.1
-  path: ^1.9.0
-  path_provider: ^2.1.3
-  flutter_keyboard_visibility: ^6.0.0
-  vector_math: ^2.1.4
-  font_awesome_flutter: ^10.7.0
-  material_design_icons_flutter: ^7.0.7296
+  path: 
+  path_provider: 
+  flutter_keyboard_visibility: 
+  vector_math: 
+  font_awesome_flutter: 
+  material_design_icons_flutter: 
 
 dev_dependencies:
   flutter_test:
