@@ -9,7 +9,7 @@ repository: https://github.com/AdnanKhan45/flutter_story_editor/tree/main
 homepage: https://github.com/AdnanKhan45/flutter_story_editor/blob/main/lib/flutter_story_editor.dart
 
 environment:
-  sdk: '>=3.3.0 <4.0.0'
+  sdk: '>=3.2.3 <4.0.0'
   flutter: ">=1.17.0"
 
 dependencies:
