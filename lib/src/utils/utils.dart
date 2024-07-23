@@ -18,7 +18,9 @@ Future<Uint8List?> generateThumbnail(File? file) async {
 
   Uint8List? thumbnail;
   // Supports mp4, mov, avi formats.
-  if (file.path.endsWith('.mp4') || file.path.endsWith('.mov') || file.path.endsWith('.avi')) {
+  if (file.path.endsWith('.mp4') ||
+      file.path.endsWith('.mov') ||
+      file.path.endsWith('.avi')) {
     thumbnail = await VideoThumbnail.thumbnailData(
       video: file.path,
       imageFormat: ImageFormat.JPEG,
@@ -36,16 +38,19 @@ Future<Uint8List?> generateThumbnail(File? file) async {
 ///
 /// Returns a [File] containing the image data, or null if conversion fails.
 Future<File?> convertWidgetToImage(GlobalKey key) async {
-  RenderRepaintBoundary? boundary = key.currentContext?.findRenderObject() as RenderRepaintBoundary?;
+  RenderRepaintBoundary? boundary =
+      key.currentContext?.findRenderObject() as RenderRepaintBoundary?;
 
   if (boundary != null && boundary.isRepaintBoundary) {
     ui.Image boxImage = await boundary.toImage(pixelRatio: 3.0);
-    ByteData? byteData = await boxImage.toByteData(format: ui.ImageByteFormat.png);
+    ByteData? byteData =
+        await boxImage.toByteData(format: ui.ImageByteFormat.png);
 
     if (byteData != null) {
       Uint8List imageData = byteData.buffer.asUint8List();
       final tempDir = await getTemporaryDirectory();
-      final file = File('${tempDir.path}/image${DateTime.now().millisecondsSinceEpoch}.png');
+      final file = File(
+          '${tempDir.path}/image${DateTime.now().millisecondsSinceEpoch}.png');
       await file.create();
       await file.writeAsBytes(imageData);
 
@@ -77,17 +82,40 @@ Future<List<File>?> convertWidgetsToImages(List<GlobalKey> keys) async {
 /// [file] - File to be cropped.
 ///
 /// Returns a [CroppedFile] containing the cropped image data, or null if cropping is cancelled.
-Future<CroppedFile?> cropImage(BuildContext context, {required File file}) async {
-  CroppedFile? croppedFile = await ImageCropper.platform.cropImage(
-      sourcePath: file.path,
-      aspectRatioPresets: Platform.isAndroid
-          ? [CropAspectRatioPreset.square, CropAspectRatioPreset.ratio3x2, CropAspectRatioPreset.original, CropAspectRatioPreset.ratio4x3, CropAspectRatioPreset.ratio16x9]
-          : [CropAspectRatioPreset.original, CropAspectRatioPreset.square, CropAspectRatioPreset.ratio3x2, CropAspectRatioPreset.ratio4x3, CropAspectRatioPreset.ratio5x3, CropAspectRatioPreset.ratio5x4, CropAspectRatioPreset.ratio7x5, CropAspectRatioPreset.ratio16x9],
-      uiSettings: [
-        AndroidUiSettings(toolbarTitle: 'Crop Image', toolbarColor: darkGreenColor, toolbarWidgetColor: Colors.white, activeControlsWidgetColor: tealColor, initAspectRatio: CropAspectRatioPreset.original, lockAspectRatio: false),
-        IOSUiSettings(title: 'Crop Image'),
-        WebUiSettings(context: context),
-      ]);
+Future<CroppedFile?> cropImage(BuildContext context,
+    {required File file}) async {
+  CroppedFile? croppedFile =
+      await ImageCropper.platform.cropImage(sourcePath: file.path, uiSettings: [
+    AndroidUiSettings(
+      toolbarTitle: 'Crop Image',
+      toolbarColor: darkGreenColor,
+      toolbarWidgetColor: Colors.white,
+      activeControlsWidgetColor: tealColor,
+      initAspectRatio: CropAspectRatioPreset.original,
+      lockAspectRatio: false,
+      aspectRatioPresets: [
+        CropAspectRatioPreset.square,
+        CropAspectRatioPreset.ratio3x2,
+        CropAspectRatioPreset.original,
+        CropAspectRatioPreset.ratio4x3,
+        CropAspectRatioPreset.ratio16x9
+      ],
+    ),
+    IOSUiSettings(
+      title: 'Crop Image',
+      aspectRatioPresets: [
+        CropAspectRatioPreset.original,
+        CropAspectRatioPreset.square,
+        CropAspectRatioPreset.ratio3x2,
+        CropAspectRatioPreset.ratio4x3,
+        CropAspectRatioPreset.ratio5x3,
+        CropAspectRatioPreset.ratio5x4,
+        CropAspectRatioPreset.ratio7x5,
+        CropAspectRatioPreset.ratio16x9
+      ],
+    ),
+    WebUiSettings(context: context),
+  ]);
 
   return croppedFile;
 }
@@ -98,5 +126,7 @@ Future<CroppedFile?> cropImage(BuildContext context, {required File file}) async
 ///
 /// Returns [true] if the file is a video (.mp4, .mov, .avi); otherwise, returns [false].
 bool isVideo(File file) {
-  return file.path.endsWith('.mp4') || file.path.endsWith('.mov') || file.path.endsWith('.avi');
+  return file.path.endsWith('.mp4') ||
+      file.path.endsWith('.mov') ||
+      file.path.endsWith('.avi');
 }
