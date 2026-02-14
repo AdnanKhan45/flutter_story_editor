@@ -24,10 +24,11 @@ class _DraggableStickerWidgetState extends State<DraggableStickerWidget> {
         builder: (BuildContext context, Widget? child) {
           return Transform(
             transform: notifier.value,
-            child: Align(alignment: Alignment.center, child: Image.asset(widget.stickerPath)),
+            child: Align(
+                alignment: Alignment.center,
+                child: Image.asset(widget.stickerPath, package: 'cumrid_story_editor')),
           );
         },
-
       ),
     );
   }

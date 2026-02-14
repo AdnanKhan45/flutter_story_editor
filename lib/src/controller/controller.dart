@@ -1,11 +1,8 @@
-
-
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_story_editor/src/const/filters.dart';
 import 'package:flutter_story_editor/src/enums/story_editing_modes.dart';
 import 'package:flutter_story_editor/src/models/stroke.dart';
-
 
 /// A controller class for managing state in a Flutter story editing application.
 ///
@@ -49,7 +46,8 @@ class FlutterStoryEditorController extends ChangeNotifier {
   }
 
   // Notifier for the lines editable on the UI, stored per file.
-  final ValueNotifier<List<List<Stroke>>> uiEditableFileLinesNotifier = ValueNotifier<List<List<Stroke>>>([]);
+  final ValueNotifier<List<List<Stroke>>> uiEditableFileLinesNotifier =
+      ValueNotifier<List<List<Stroke>>>([]);
 
   /// Gets the list of editable lines for all files.
   List<List<Stroke>> get uiEditableFileLines => uiEditableFileLinesNotifier.value;

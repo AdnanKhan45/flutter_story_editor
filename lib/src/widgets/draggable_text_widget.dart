@@ -145,7 +145,8 @@ class _DraggableTextWidgetState extends State<DraggableTextWidget> with Automati
                       padding: const EdgeInsets.symmetric(horizontal: 50.0),
                       child: IntrinsicWidth(
                         child: TextField(
-                          maxLines: 2,
+                          minLines: 1, 
+                          maxLines: null, 
                           textInputAction: TextInputAction.newline,
                           statesController: _statesController,
                           textAlign: TextAlign.center,
@@ -185,7 +186,8 @@ class _DraggableTextWidgetState extends State<DraggableTextWidget> with Automati
                     padding: const EdgeInsets.symmetric(horizontal: 50.0),
                     child: IntrinsicWidth(
                       child: TextField(
-                        maxLines: 2,
+                        minLines: 1, 
+                        maxLines: null, 
                         textInputAction: TextInputAction.newline,
                         statesController: _statesController,
                         textAlign: TextAlign.center,

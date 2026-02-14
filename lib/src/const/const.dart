@@ -6,6 +6,7 @@ import 'filters.dart';
 
 class Consts {
 
+  static String selfPackageName = "flutter_story_editor";
 
   static List<String> filterNames = ["None", "Pop", "B&W", "Cool", "Chrome", "Film"];
 
